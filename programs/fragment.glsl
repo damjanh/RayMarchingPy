@@ -4,6 +4,7 @@
 layout(location = 0) out vec4 fragColor;
 
 uniform vec2 u_resolution;
+uniform vec2 u_mouse;
 
 const float FOV = 1.0;
 // Max steps of a ray
@@ -83,9 +84,25 @@ vec3 getMaterial(vec3 p, float id) {
     return m;
 }
 
+mat3 getCam(vec3 ro, vec3 lookAt) {
+    vec3 camF = normalize(vec3(lookAt - ro));
+    vec3 camR = normalize(cross(vec3(0, 1, 0), camF));
+    vec3 camU = cross(camF, camR);
+    return mat3(camR, camU, camF);
+}
+
+void mouseControl(inout vec3 ro) {
+    vec2 m = u_mouse / u_resolution;
+    pR(ro.yz, m.y * PI * 0.5 - 0.5);
+    pR(ro.xz, m.x * TAU);
+}
+
 void render(inout vec3 col, in vec2 uv) {
-    vec3 ro = vec3(0.0, 0.0, -3.0);
-    vec3 rd = normalize(vec3(uv, FOV));
+    vec3 ro = vec3(3.0, 3.0, -3.0);
+    mouseControl(ro);
+
+    vec3 lookAt = vec3(0, 0, 0);
+    vec3 rd = getCam(ro, lookAt) * normalize(vec3(uv, FOV));
 
     vec2 object = rayMarch(ro, rd);
 
@@ -96,7 +113,7 @@ void render(inout vec3 col, in vec2 uv) {
         vec3 material = getMaterial(p, object.y);
         col += getLight(p, rd, material);
         // Fog
-        col = mix(col, background, 1.0 - exp(-0.008 * object.x * object.x));
+        col = mix(col, background, 1.0 - exp(-0.0008 * object.x * object.x));
     } else {
         col += background - max(0.95 * rd.y, 0.0);
     }
