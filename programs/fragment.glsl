@@ -13,14 +13,21 @@ const float MAX_DIST = 500;
 // Calculation accuracy
 const float EPSILON = 0.001;
 
+vec2 fOpUnion(vec2 res1, vec2 res2) {
+   return (res1.x < res2.x) ? res1 : res2;
+}
+
 vec2 map(vec3 p) {
-    pMod3(p, vec3(5));
+    // plane
+    float planeDist = fPlane(p, vec3(0, 1, 0), 1.0);
+    float planeID = 2.0;
+    vec2 plane = vec2(planeDist, planeID);
     // sphere
     float sphereDist = fSphere(p, 1.0);
     float sphereID = 1.0;
     vec2 sphere = vec2(sphereDist, sphereID);
     // result
-    vec2 res = sphere;
+    vec2 res = fOpUnion(plane, sphere);
     return res;
 }
 
