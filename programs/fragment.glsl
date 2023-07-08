@@ -18,6 +18,10 @@ vec2 fOpUnion(vec2 res1, vec2 res2) {
    return (res1.x < res2.x) ? res1 : res2;
 }
 
+vec2 fOpDifference(vec2 res1, vec2 res2) {
+    return (res1.x > - res2.x) ? res1: vec2(-res2.x, res2.y);
+}
+
 vec2 map(vec3 p) {
     // plane
     float planeDist = fPlane(p, vec3(0, 1, 0), 14.0);
@@ -37,10 +41,14 @@ vec2 map(vec3 p) {
     float cylinderDist = fCylinder(pc.yxz, 4, 3);
     float cylinderID = 3.0;
     vec2 cylinder = vec2(cylinderDist, cylinderID);
+    // wall
+    float wallDist = fBox2(p.xy, vec2(1, 15));
+    float wallID = 3.0;
+    vec2 wall = vec2(wallDist, wallID);
     // result
     vec2 res;
-    res = cylinder;
     res = fOpUnion(box, cylinder);
+    res = fOpDifference(wall, res);
     res = fOpUnion(res, plane);
     return res;
 }
@@ -114,7 +122,7 @@ void mouseControl(inout vec3 ro) {
 }
 
 void render(inout vec3 col, in vec2 uv) {
-    vec3 ro = vec3(10.0, 10.0, -10.0);
+    vec3 ro = vec3(15.0, 15.0, -15.0);
     mouseControl(ro);
 
     vec3 lookAt = vec3(0, 0, 0);
@@ -129,7 +137,7 @@ void render(inout vec3 col, in vec2 uv) {
         vec3 material = getMaterial(p, object.y);
         col += getLight(p, rd, material);
         // Fog
-        col = mix(col, background, 1.0 - exp(-0.0008 * object.x * object.x));
+        col = mix(col, background, 1.0 - exp(-0.00008 * object.x * object.x));
     } else {
         col += background - max(0.95 * rd.y, 0.0);
     }
