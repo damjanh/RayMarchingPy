@@ -22,6 +22,11 @@ vec2 fOpDifference(vec2 res1, vec2 res2) {
     return (res1.x > - res2.x) ? res1: vec2(-res2.x, res2.y);
 }
 
+vec2 fOpDifferenceColumnsID(vec2 res1, vec2 res2, float r, float n) {
+    float dist = fOpDifferenceColumns(res1.x, res2.x, r, n);
+    return (res1.x > -res2.x) ? vec2(dist, res1.y): vec2(dist, res2.y);
+}
+
 vec2 map(vec3 p) {
     // plane
     float planeDist = fPlane(p, vec3(0, 1, 0), 14.0);
@@ -48,7 +53,7 @@ vec2 map(vec3 p) {
     // result
     vec2 res;
     res = fOpUnion(box, cylinder);
-    res = fOpDifference(wall, res);
+    res = fOpDifferenceColumnsID(wall, res, 0.6, 3.0);
     res = fOpUnion(res, plane);
     return res;
 }
