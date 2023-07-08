@@ -1,4 +1,5 @@
 #version 330
+#include hg_sdf.glsl
 
 layout(location = 0) out vec4 fragColor;
 
@@ -13,8 +14,9 @@ const float MAX_DIST = 500;
 const float EPSILON = 0.001;
 
 vec2 map(vec3 p) {
+    pMod3(p, vec3(5));
     // sphere
-    float sphereDist = length(p) - 1.0;
+    float sphereDist = fSphere(p, 1.0);
     float sphereID = 1.0;
     vec2 sphere = vec2(sphereDist, sphereID);
     // result
