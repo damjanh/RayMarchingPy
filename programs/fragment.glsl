@@ -69,7 +69,7 @@ vec3 getMaterial(vec3 p, float id) {
         m = vec3(0.9, 0.9, 0.0);
         break;
         case 2:
-        m = vec3(0.0, 0.5, 0.5);
+        m = vec3(0.2 + 0.4 * mod(floor(p.x) + floor(p.z), 2.0));
         break;
     }
     return m;
