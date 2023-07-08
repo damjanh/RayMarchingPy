@@ -90,5 +90,8 @@ void main() {
     vec3 col;
     render(col, uv);
 
+    // Gamma correction
+    col = pow(col, vec3(0.4545));
+
     fragColor = vec4(col, 1.0);
 }
