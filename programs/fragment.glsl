@@ -127,10 +127,20 @@ vec3 render(vec2 uv) {
     return col;
 }
 
+vec2 getUV(vec2 offset) {
+    return (2.0 * (gl_FragCoord.xy + offset) - u_resolution.xy) /u_resolution.y;
+}
+
+vec3 renderAAx4() {
+    vec4 e = vec4(0.125, -0.125, 0.375, -0.375);
+    vec3 colAA = render(getUV(e.xz)) + render(getUV(e.yw)) + render(getUV(e.wx)) + render(getUV(e.zy));
+    return colAA /= 4.0;
+}
+
 void main() {
     vec2 uv = (2.0 * gl_FragCoord.xy - u_resolution.xy) / u_resolution.y;
 
-    vec3 col = render(uv);
+    vec3 col = renderAAx4();
 
     // Gamma correction
     col = pow(col, vec3(0.4545));
