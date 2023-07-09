@@ -47,10 +47,12 @@ vec2 map(vec3 p) {
     float sphereID = 1.0;
     vec2 sphere = vec2(sphereDist, sphereID);
     // manipulation operators
+    pMirrorOctant(p.xz, vec2(50, 50));
+    p.x = -abs(p.x) + 20;
     pMod1(p.z, 15);
     // roof
     vec3 pr = p;
-    pr.y -= 15.0;
+    pr.y -= 15.5;
     pR(pr.xy, 0.6);
     pr.x -= 18.0;
     float roofDist = fBox2(pr.xy, vec2(20, 0.3));
