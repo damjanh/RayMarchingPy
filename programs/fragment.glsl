@@ -46,6 +46,8 @@ vec2 map(vec3 p) {
     float sphereDist = fSphere(p, 1.0);
     float sphereID = 1.0;
     vec2 sphere = vec2(sphereDist, sphereID);
+    // manipulation operators
+    pMod1(p.z, 15);
     // box
     float boxDist = fBox(p, vec3(3, 9, 4));
     float boxID = 3.0;
