@@ -65,12 +65,14 @@ vec3 getNormal(vec3 p) {
     return normalize(n);
 }
 
-vec3 getLight(vec3 p, vec3 rd, vec3 color) {
+vec3 getLight(vec3 p, vec3 rd, float id) {
     vec3 lightPos = vec3(20.0, 40.0, -30.0);
     vec3 L = normalize(lightPos - p);
     vec3 N = getNormal(p);
     vec3 V = -rd;
     vec3 R = reflect(-L, N);
+
+    vec3 color = getMaterial(p, id, N);
 
     vec3 specColor = vec3(0.5);
     vec3 specular = specColor * pow(clamp(dot(R, V), 0.0, 1.0), 10.0);
@@ -114,8 +116,7 @@ void render(inout vec3 col, in vec2 uv) {
 
     if (object.x < MAX_DIST) {
         vec3 p = ro + object.x * rd;
-        vec3 material = getMaterial(p, object.y);
-        col += getLight(p, rd, material);
+        col += getLight(p, rd, object.y);
         // Fog
         col = mix(col, background, 1.0 - exp(-0.00008 * object.x * object.x));
     } else {

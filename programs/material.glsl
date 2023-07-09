@@ -1,4 +1,4 @@
-vec3 getMaterial(vec3 p, float id) {
+vec3 getMaterial(vec3 p, float id, vec3 normal) {
     vec3 m;
     switch (int(id)) {
         case 1:
