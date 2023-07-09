@@ -6,6 +6,7 @@ layout(location = 0) out vec4 fragColor;
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
+uniform float u_scroll;
 
 const float FOV = 1.0;
 // Max steps of a ray
@@ -163,7 +164,7 @@ void mouseControl(inout vec3 ro) {
 }
 
 void render(inout vec3 col, in vec2 uv) {
-    vec3 ro = vec3(15.0, 15.0, -15.0);
+    vec3 ro = vec3(36.0, 36.0, -36.0) / u_scroll;
     mouseControl(ro);
 
     vec3 lookAt = vec3(0, 0, 0);
