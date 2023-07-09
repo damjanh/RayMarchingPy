@@ -5,6 +5,7 @@ layout(location = 0) out vec4 fragColor;
 
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
+uniform float u_time;
 
 const float FOV = 1.0;
 // Max steps of a ray
@@ -13,6 +14,11 @@ const int MAX_STEPS = 256;
 const float MAX_DIST = 500;
 // Calculation accuracy
 const float EPSILON = 0.001;
+
+float fDisplace(vec3 p) {
+    pR(p.yz, sin(2.0 * u_time));
+    return (sin(p.x + 4.0 * u_time) * sin(p.y + sin(2.0 * u_time)) * sin(p.z + 6.0 * u_time));
+}
 
 vec2 fOpUnionID(vec2 res1, vec2 res2) {
     return (res1.x < res2.x) ? res1 : res2;
@@ -43,7 +49,7 @@ vec2 map(vec3 p) {
     float planeID = 2.0;
     vec2 plane = vec2(planeDist, planeID);
     // sphere
-    float sphereDist = fSphere(p, 9.0);
+    float sphereDist = fSphere(p, 9.0 + fDisplace(p));
     float sphereID = 1.0;
     vec2 sphere = vec2(sphereDist, sphereID);
     // manipulation operators
