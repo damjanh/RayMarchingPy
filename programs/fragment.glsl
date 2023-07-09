@@ -43,7 +43,7 @@ vec2 map(vec3 p) {
     float planeID = 2.0;
     vec2 plane = vec2(planeDist, planeID);
     // sphere
-    float sphereDist = fSphere(p, 1.0);
+    float sphereDist = fSphere(p, 9.0);
     float sphereID = 1.0;
     vec2 sphere = vec2(sphereDist, sphereID);
     // manipulation operators
@@ -78,6 +78,7 @@ vec2 map(vec3 p) {
     res = fOpDifferenceColumnsID(wall, res, 0.6, 3.0);
     res = fOpUnionChamferID(res, roof, 0.9);
     res = fOpUnionStairsID(res, plane, 4.0, 5.0);
+    res = fOpUnionID(res, sphere);
     return res;
 }
 
