@@ -27,6 +27,16 @@ vec2 fOpDifferenceColumnsID(vec2 res1, vec2 res2, float r, float n) {
     return (res1.x > -res2.x) ? vec2(dist, res1.y): vec2(dist, res2.y);
 }
 
+vec2 fOpUnionStairsID(vec2 res1, vec2 res2, float r, float n) {
+    float dist = fOpUnionStairs(res1.x, res2.x, r, n);
+    return (res1.x < res2.x) ? vec2(dist, res1.y) : vec2(dist, res2.y);
+}
+
+vec2 fOpUnionChamferID(vec2 res1, vec2 res2, float r) {
+    float dist = fOpUnionChamfer(res1.x, res2.x, r);
+    return (res1.x < res2.x) ? vec2(dist, res1.y) : vec2(dist, res1.y);
+}
+
 vec2 map(vec3 p) {
     // plane
     float planeDist = fPlane(p, vec3(0, 1, 0), 14.0);
@@ -54,7 +64,7 @@ vec2 map(vec3 p) {
     vec2 res;
     res = fOpUnion(box, cylinder);
     res = fOpDifferenceColumnsID(wall, res, 0.6, 3.0);
-    res = fOpUnion(res, plane);
+    res = fOpUnionStairsID(res, plane, 4.0, 5.0);
     return res;
 }
 
