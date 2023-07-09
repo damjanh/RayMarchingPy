@@ -103,7 +103,10 @@ void mouseControl(inout vec3 ro) {
     pR(ro.xz, m.x * TAU);
 }
 
-void render(inout vec3 col, in vec2 uv) {
+vec3 render(vec2 uv) {
+    vec3 col = vec3(0);
+    vec3 background = vec3(0.5, 0.8, 0.9);
+
     vec3 ro = vec3(36.0, 36.0, -36.0) / u_scroll;
     mouseControl(ro);
 
@@ -112,7 +115,6 @@ void render(inout vec3 col, in vec2 uv) {
 
     vec2 object = rayMarch(ro, rd);
 
-    vec3 background = vec3(0.5, 0.8, 0.9);
 
     if (object.x < MAX_DIST) {
         vec3 p = ro + object.x * rd;
@@ -122,13 +124,13 @@ void render(inout vec3 col, in vec2 uv) {
     } else {
         col += background - max(0.95 * rd.y, 0.0);
     }
+    return col;
 }
 
 void main() {
     vec2 uv = (2.0 * gl_FragCoord.xy - u_resolution.xy) / u_resolution.y;
 
-    vec3 col;
-    render(col, uv);
+    vec3 col = render(uv);
 
     // Gamma correction
     col = pow(col, vec3(0.4545));
