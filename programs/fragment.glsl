@@ -14,17 +14,17 @@ const float MAX_DIST = 500;
 // Calculation accuracy
 const float EPSILON = 0.001;
 
-vec2 fOpUnion(vec2 res1, vec2 res2) {
-   return (res1.x < res2.x) ? res1 : res2;
+vec2 fOpUnionID(vec2 res1, vec2 res2) {
+    return (res1.x < res2.x) ? res1 : res2;
 }
 
-vec2 fOpDifference(vec2 res1, vec2 res2) {
-    return (res1.x > - res2.x) ? res1: vec2(-res2.x, res2.y);
+vec2 fOpDifferenceID(vec2 res1, vec2 res2) {
+    return (res1.x > -res2.x) ? res1 : vec2(-res2.x, res2.y);
 }
 
 vec2 fOpDifferenceColumnsID(vec2 res1, vec2 res2, float r, float n) {
     float dist = fOpDifferenceColumns(res1.x, res2.x, r, n);
-    return (res1.x > -res2.x) ? vec2(dist, res1.y): vec2(dist, res2.y);
+    return (res1.x > -res2.x) ? vec2(dist, res1.y) : vec2(dist, res2.y);
 }
 
 vec2 fOpUnionStairsID(vec2 res1, vec2 res2, float r, float n) {
@@ -34,7 +34,7 @@ vec2 fOpUnionStairsID(vec2 res1, vec2 res2, float r, float n) {
 
 vec2 fOpUnionChamferID(vec2 res1, vec2 res2, float r) {
     float dist = fOpUnionChamfer(res1.x, res2.x, r);
-    return (res1.x < res2.x) ? vec2(dist, res1.y) : vec2(dist, res1.y);
+    return (res1.x < res2.x) ? vec2(dist, res1.y) : vec2(dist, res2.y);
 }
 
 vec2 map(vec3 p) {
@@ -56,7 +56,7 @@ vec2 map(vec3 p) {
     pR(pr.xy, 0.6);
     pr.x -= 18.0;
     float roofDist = fBox2(pr.xy, vec2(20, 0.3));
-    float roofID = 3.0;
+    float roofID = 4.0;
     vec2 roof = vec2(roofDist, roofID);
     // box
     float boxDist = fBox(p, vec3(3, 9, 4));
@@ -74,7 +74,7 @@ vec2 map(vec3 p) {
     vec2 wall = vec2(wallDist, wallID);
     // result
     vec2 res;
-    res = fOpUnion(box, cylinder);
+    res = fOpUnionID(box, cylinder);
     res = fOpDifferenceColumnsID(wall, res, 0.6, 3.0);
     res = fOpUnionChamferID(res, roof, 0.9);
     res = fOpUnionStairsID(res, plane, 4.0, 5.0);
@@ -114,10 +114,12 @@ vec3 getLight(vec3 p, vec3 rd, vec3 color) {
 
     vec3 ambient = color * 0.05;
 
+    vec3 fresnel = 0.25 * color * pow(1.0 + dot(rd, N), 3.0);
+
     // Shadows
     float d = rayMarch(p + N * 0.02, normalize(lightPos)).x;
-    if (d < length(lightPos - p)) return ambient;
-    return diffuse + ambient + specular;
+    if (d < length(lightPos - p)) return ambient + fresnel;
+    return diffuse + ambient + specular + fresnel;
 }
 
 vec3 getMaterial(vec3 p, float id) {
@@ -131,6 +133,10 @@ vec3 getMaterial(vec3 p, float id) {
         break;
         case 3:
         m = vec3(0.7, 0.8, 0.9);
+        break;
+        case 4:
+         vec2 i = step(fract(0.5 * p.xz), vec2(1.0 / 10.0));
+        m = ((1.0 - i.x) * (1.0 - i.y)) * vec3(0.37, 0.12, 0.0);
         break;
     }
     return m;
