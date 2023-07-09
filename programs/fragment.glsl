@@ -51,6 +51,7 @@ vec2 map(vec3 p) {
     // roof
     vec3 pr = p;
     pr.y -= 15.0;
+    pR(pr.xy, 0.6);
     pr.x -= 18.0;
     float roofDist = fBox2(pr.xy, vec2(20, 0.3));
     float roofID = 3.0;
